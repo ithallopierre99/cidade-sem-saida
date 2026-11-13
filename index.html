@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cidade Sem Saída</title>
+    <style>
+        body {
+            background-color: #0b0b0e;
+            color: #d1d1d6;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .game-container {
+            width: 100%;
+            max-width: 400px;
+            background: #16161a;
+            border: 2px solid #2c2c35;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+            box-sizing: border-box;
+        }
+        h1 {
+            color: #ff4d4d;
+            font-size: 22px;
+            text-align: center;
+            margin-top: 0;
+            text-shadow: 0 0 10px rgba(255,77,77,0.3);
+        }
+        .story-box {
+            background: #101013;
+            border-left: 4px solid #ff4d4d;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            font-size: 15px;
+            line-height: 1.5;
+            min-height: 90px;
+        }
+        .inventory {
+            background: #22222a;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            margin-bottom: 15px;
+            color: #a7a7b2;
+        }
+        .choices {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        button {
+            background: #2a2a35;
+            color: #ffffff;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            text-align: left;
+        }
+        button:active {
+            transform: scale(0.98);
+            background: #3a3a4a;
+        }
+        button:hover {
+            background: #353545;
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+    <h1>CIDADE SEM SAÍDA</h1>
+    <div class="inventory" id="inventoryText">Inventário: Vazio</div>
+    <div class="story-box" id="storyText">Você acorda desorientado no banco de motorista de um carro abandonado. A névoa cobre a rua deserta. O rádio só emite ruídos estáticos.</div>
+    <div class="choices" id="choicesBox">
+        <button onclick="escolha('olhar_porta')">Tentar abrir a porta do carro</button>
+        <button onclick="escolha('pegar_bilhete')">Examinar o painel do carro</button>
+    </div>
+</div>
+
+<script>
+    let temBilhete = false;
+    let temChave = false;
+
+    function escolha(opcao) {
+        let story = document.getElementById("storyText");
+        let choices = document.getElementById("choicesBox");
+        let inv = document.getElementById("inventoryText");
+
+        if (opcao === 'olhar_porta') {
+            story.innerHTML = "A porta destranca com um estalo seco. Você sai para a calçada fria. Ruas vazias, lojas com as portas abertas às pressas e um silêncio absoluto cercam o local.";
+            choices.innerHTML = `
+                <button onclick="escolha('explorar_supermercado')">Explorar o Supermercado</button>
+                <button onclick="escolha('ir_delegacia')">Ir até a Delegacia</button>
+            `;
+        } 
+        else if (opcao === 'pegar_bilhete') {
+            temBilhete = true;
+            inv.innerHTML = "Inventário: [Bilhete: 'Não tente sair']";
+            story.innerHTML = "Você pega um bilhete amassado no painel. A caligrafia é trêmula: <em>'Se você está lendo isso, não tente sair da cidade.'</em>";
+            choices.innerHTML = `
+                <button onclick="escolha('olhar_porta')">Sair do carro</button>
+            `;
+        }
+        else if (opcao === 'explorar_supermercado') {
+            story.innerHTML = "Prateleiras reviradas e carrinhos abandonados. No balcão do caixa, você encontra uma chave enferrujada e um rascunho policial.";
+            temChave = true;
+            inv.innerHTML = "Inventário: [Bilhete], [Chave do Metrô]";
+            choices.innerHTML = `
+                <button onclick="escolha('ir_metro')">Ir para a Estação de Metrô</button>
+            `;
+        }
+        else if (opcao === 'ir_delegacia') {
+            story.innerHTML = "A delegacia está escura. Os arquivos mostram que os moradores desapareceram em uma única noite, sem sinais de luta.";
+            choices.innerHTML = `
+                <button onclick="escolha('explorar_supermercado')">Ir ao Supermercado</button>
+                <button onclick="escolha('ir_metro')">Ir para a Estação de Metrô</button>
+            `;
+        }
+        else if (opcao === 'ir_metro') {
+            if (temChave) {
+                story.innerHTML = "Você usa a chave na grade da estação de metrô. Ao descer as escadas rumo aos túneis escuros, uma silhueta vultosa observa você do alto... FIM DO PROTÓTIPO. (Parabéns por testar!)";
+                choices.innerHTML = `<button onclick="location.reload()">Jogar Novamente</button>`;
+            } else {
+                story.innerHTML = "A entrada do metrô está trancada com cadeado pesado. Você precisa encontrar uma chave antes de prosseguir.";
+                choices.innerHTML = `
+                    <button onclick="escolha('explorar_supermercado')">Voltar ao Supermercado</button>
+                `;
+            }
+        }
+    }
+</script>
+
+</body>
+</html>
